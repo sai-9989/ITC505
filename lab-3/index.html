@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lab 3: Serving Fonts</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Bungee+Shade&family=Faster+One&display=swap" rel="stylesheet">
+
+  <style>
+    /* Premium enhanced background: deep midnight blue → soft gold-beige */
+    body {
+      background: linear-gradient(135deg, #0b1d51, #f7ecd2); /* luxurious gradient */
+      background-attachment: fixed;
+      padding: 30px;
+      text-align: center;
+      font-size: 18px;
+    }
+
+    /* Heading with 3D animation */
+    h1 {
+      font-family: 'Creepster', cursive;
+      font-size: 3em;
+      color: #3a3a3a; 
+      margin-bottom: 30px;
+      display: inline-block;
+      animation: rotate3D 5s infinite linear;
+      transform-style: preserve-3d;
+    }
+
+    @keyframes rotate3D {
+      0%   { transform: rotateY(0deg); }
+      25%  { transform: rotateY(15deg); }
+      50%  { transform: rotateY(0deg); }
+      75%  { transform: rotateY(-15deg); }
+      100% { transform: rotateY(0deg); }
+    }
+
+    /* First paragraph animation */
+    .para1 {
+      font-family: 'Bungee Shade', cursive;
+      color: #2a2a2a;
+      margin-bottom: 20px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      animation: floatText 3s ease-in-out infinite;
+    }
+
+    @keyframes floatText {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    /* Second paragraph animation */
+    .para2 {
+      font-family: 'Faster One', cursive;
+      color: #3c4a57;
+      margin-bottom: 20px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      animation: swingText 4s ease-in-out infinite;
+    }
+
+    @keyframes swingText {
+      0%, 100% { transform: rotate(-1deg); }
+      50% { transform: rotate(1deg); }
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 50px;
+      font-size: 0.9em;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Serving Fonts</h1>
+
+  <p class="para1">
+    To reference a font we may use the import <code>@import</code> or 
+    <code>&lt;link&gt;</code> code: link code offered by Google fonts. 
+    This guarantees the downloading of the font file by the browser of the client. 
+    not take web fonts rather than the ones embedded in systems.
+  </p>
+
+  <p class="para2">
+    This process is achieved through the incorporation of a special link tag in the 
+    HTML <code>&lt;head&gt;</code>. This link points to the 
+    stylesheet on Google fonts. Once the font file is 
+    we have downloaded it, we use it in CSS with the <code>font-family</code> 
+    property. In this manner, visitors can view the font which we have picked. 
+    and even though they do not have it on their computer.
+  </p>
+
+  <footer>
+    <p>Last updated: <span id="lastModified"></span></p>
+  </footer>
+
+  <script type="text/javascript">
+    var x = document.lastModified;
+    document.getElementById('lastModified').textContent = x;
+  </script>
+
+</body>
+</html>
