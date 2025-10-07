@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather&family=Playfair+Display:wght@600&display=swap');
+
+body {
+    font-family: 'Merriweather', serif;
+    background: radial-gradient(circle at top left, #1e1f2e, #161722, #0f0f1a);
+    color: #f8f9fa;
+    margin: 0;
+    padding: 0 10%;
+    line-height: 1.8;
+    overflow-x: hidden;
+}
+
+/* Smooth fade-in for whole body */
+body {
+    animation: fadeIn 1.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+header {
+    text-align: center;
+    padding: 60px 0 40px;
+    border-bottom: 2px solid #efb810;
+}
+
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.2em;
+    color: #efb810;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 10px rgba(239,184,16,0.3);
+    animation: fadeTitle 2s ease-in-out;
+}
+
+@keyframes fadeTitle {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2em;
+    color: #ffd966;
+    margin-top: 50px;
+    border-left: 4px solid #efb810;
+    padding-left: 10px;
+    transition: color 0.4s ease;
+}
+
+h2:hover {
+    color: #ffea8a;
+}
+
+p, li {
+    font-size: 18px;
+    color: #e6e6e6;
+}
+
+ul {
+    margin-left: 25px;
+}
+
+em {
+    color: #d0bdf4;
+    font-style: italic;
+}
+
+#addendum {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(239,184,16,0.3);
+    border-radius: 12px;
+    padding: 35px;
+    margin-top: 60px;
+    box-shadow: 0 0 20px rgba(239,184,16,0.2);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    animation: floatIn 1.8s ease;
+}
+
+#addendum:hover {
+    transform: scale(1.01);
+    box-shadow: 0 0 25px rgba(239,184,16,0.4);
+}
+
+@keyframes floatIn {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#addendum h3 {
+    color: #efb810;
+    font-family: 'Playfair Display', serif;
+    margin-top: 25px;
+}
+
+footer {
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 50px;
+    font-size: 0.9em;
+    color: #bbb;
+    border-top: 1px solid #444;
+}
