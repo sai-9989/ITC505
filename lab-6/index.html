@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ITC505 Lab 6 - Holy Grail Layout</title>
+  <style>
+    /* === HOLY GRAIL LAYOUT USING CSS GRID === */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: grid;
+      grid-template-areas:
+        "header header header"
+        "nav main ad"
+        "footer footer footer";
+      grid-template-columns: 200px 1fr 200px;
+      grid-template-rows: auto 1fr auto;
+      min-height: 100vh;
+      background-color: #f5f7fa;
+    }
+
+    header {
+      grid-area: header;
+      background-color: #0077b6;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    nav {
+      grid-area: nav;
+      background-color: #caf0f8;
+      padding: 20px;
+    }
+
+    main {
+      grid-area: main;
+      background-color: #ffffff;
+      padding: 20px;
+    }
+
+    aside {
+      grid-area: ad;
+      background-color: #e0fbfc;
+      text-align: center;
+      padding: 20px;
+    }
+
+    footer {
+      grid-area: footer;
+      background-color: #03045e;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      font-size: 14px;
+    }
+
+    a.ad-link img {
+      width: 100%;
+      border-radius: 10px;
+      transition: transform 0.2s ease;
+    }
+
+    a.ad-link img:hover {
+      transform: scale(1.05);
+    }
+
+    button {
+      background-color: #0077b6;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background-color: #023e8a;
+    }
+
+    input {
+      padding: 5px;
+      border: 1px solid #aaa;
+      border-radius: 5px;
+      margin: 5px;
+    }
+
+    .output {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <h1>ITC505 Lab 6 - Holy Grail Layout</h1>
+  </header>
+
+  <!-- MENU SIDEBAR -->
+  <nav>
+    <h3>Navigation</h3>
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Projects</a></li>
+      <li><a href="#">Assignments</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN CONTENT AREA -->
+  <main>
+    <h2>JavaScript Interactive Area</h2>
+    <p>Enter numbers separated by commas, and click “Sort Numbers” to see them sorted!</p>
+
+    <input type="text" id="numberInput" placeholder="e.g. 5,3,8,1,2" />
+    <button id="sortBtn">Sort Numbers</button>
+
+    <div class="output" id="output"></div>
+  </main>
+
+  <!-- ADVERTISEMENT AREA -->
+<aside>
+  <h3>Sponsored</h3>
+  <a class="ad-link" href="https://www.amazon.com/Apple-iPhone-Silicone-MagSafe-Control/dp/B0FQFPWY45/ref=sr_1_1_sspa?dib=eyJ2IjoiMSJ9.LXrn9zi_QRVtSw22zHkdNEfyOAz6AfKI9f9FK7KSp0_lg_51kqgHXkDdIP5BD_qRNJlmSnBDxf0cVWiDhdYKF3i0fiygr6gPpXMFM17FHMvTSEtWPJTFV1n_yTE2oNtmv6EVBLKYBf9-HSgCG6qdIl-j5Nbg6UN0KVfXJNS0J5uJewB8Plbu95xglGsEpkaKBnjQbRzD0720kNukC5nFGdKt3mVJijD9dtvogS_FKTo.ZbfoBFatlMJBRmU7SnAaLHMBUI4X5bz8aX165Uq2d4M&dib_tag=se&keywords=iphone&qid=1761519710&sr=8-1-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1" target="_blank">
+    <img src="https://m.media-amazon.com/images/I/71j0ZL5vM-L._AC_SL1500_.jpg" alt="Apple iPhone Silicone Case with MagSafe" />
+  </a>
+</aside>
+
+
+  <!-- FOOTER -->
+  <footer>
+    <p><strong>Addendum:</strong>  
+      This JavaScript solves a simple sorting problem. The user enters a list of numbers, and the program sorts them in ascending order using the Bubble Sort algorithm.  
+      <br><br>
+      <strong>Challenges:</strong> Initially, the sorting function didn’t handle spaces or invalid input well, but by splitting and filtering the input carefully, it now works as expected.
+    </p>
+    <p>Last updated: <span id="lastModified"></span></p>
+  </footer>
+
+  <!-- LAST MODIFIED SCRIPT -->
+  <script>
+    var x = document.lastModified;
+    document.getElementById('lastModified').textContent = x;
+  </script>
+
+  <!-- LINKED JAVASCRIPT -->
+  <script src="script.js"></script>
+</body>
+</html>
