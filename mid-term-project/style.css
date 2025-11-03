@@ -6,14 +6,17 @@ body {
   margin: 0;
   padding: 20px;
 }
+
 header h1 {
   color: #ff0000;
   text-shadow: 2px 2px #000;
 }
+
 #story {
   font-size: 1.3em;
   margin: 20px;
 }
+
 #choices button {
   background-color: #ff0000;
   color: white;
@@ -24,13 +27,46 @@ header h1 {
   cursor: pointer;
   font-weight: bold;
 }
+
 #choices button:hover {
   background-color: #c40000;
 }
+
 #storyImage {
   width: 70%;
   max-width: 600px;
   border-radius: 15px;
   margin-top: 20px;
   box-shadow: 0 0 20px #ff0000;
+}
+
+/* Addendum Section */
+#addendum {
+  background-color: #1a1a1a;
+  border-top: 2px solid #ff0000;
+  margin-top: 40px;
+  padding: 20px;
+  text-align: left;
+  border-radius: 10px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#addendum h2 {
+  color: #ff0000;
+  text-align: center;
+  text-shadow: 1px 1px #000;
+}
+
+#addendum p {
+  line-height: 1.6em;
+  color: #ddd;
+  font-size: 1.05em;
+}
+
+footer {
+  margin-top: 30px;
+  font-size: 0.9em;
+  color: #ccc;
 }
