@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&family=Roboto:wght@400;700&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  color: #e0e0ff;
+  text-align: center;
+  background: radial-gradient(circle at bottom, #0b0f2c 0%, #020411 100%);
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+header {
+  background: rgba(10, 10, 40, 0.8);
+  color: #a3d5ff;
+  padding: 20px;
+  font-family: 'Orbitron', sans-serif;
+  border-bottom: 2px solid #00bfff;
+  box-shadow: 0 0 20px #0077ff;
+}
+
+#story {
+  margin: 40px auto 20px;
+  max-width: 700px;
+  font-size: 1.3em;
+  line-height: 1.6em;
+  text-shadow: 0 0 5px #66ccff;
+}
+
+#choices button {
+  background: linear-gradient(90deg, #0077ff, #00ccff);
+  border: none;
+  color: white;
+  margin: 10px;
+  padding: 12px 25px;
+  border-radius: 30px;
+  font-size: 1em;
+  cursor: pointer;
+  box-shadow: 0 0 15px #00bfff;
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+
+#choices button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 25px #66ffff;
+}
+
+img {
+  width: 350px;
+  border-radius: 15px;
+  margin-top: 25px;
+  box-shadow: 0 0 30px #004cff;
+  transition: opacity 1s;
+}
+
+footer {
+  margin-top: 50px;
+  font-size: 0.9em;
+  opacity: 0.8;
+  color: #66ccff;
+}
