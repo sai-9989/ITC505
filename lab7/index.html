@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lab 7 - Mad Lib (Tarun)</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Welcome to Tarun’s Mad Lib Generator!</h1>
+  <p>Fill in the blanks below to create your own funny story:</p>
+
+  <form id="madlib-form" method="POST" action="/ITC505/lab-7/index.html">
+    <label for="noun">Noun:</label>
+    <input type="text" id="noun" name="noun" required />
+
+    <label for="adjective">Adjective:</label>
+    <input type="text" id="adjective" name="adjective" required />
+
+    <label for="verb">Verb:</label>
+    <input type="text" id="verb" name="verb" required />
+
+    <label for="place">Place:</label>
+    <input type="text" id="place" name="place" required />
+
+    <label for="pluralNoun">Plural Noun:</label>
+    <input type="text" id="pluralNoun" name="pluralNoun" required />
+
+    <button type="submit">Create My Mad Lib!</button>
+  </form>
+
+  <!-- Placeholder where result will appear -->
+  <div id="result-area"><!--RESULT_PLACEHOLDER--></div>
+
+  <script>
+    // Front-end JS to handle same-page submission dynamically
+    const form = document.getElementById('madlib-form')
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault()
+      const formData = new FormData(form)
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: formData
+      })
+      const html = await response.text()
+      document.open()
+      document.write(html)
+      document.close()
+    })
+  </script>
+</body>
+</html>
