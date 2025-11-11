@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lab 7 - Mad Lib (Tarun)</title>
+  <title>Lab 7 – Mad Lib (Tarun)</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <h1>Welcome to Tarun’s Mad Lib Generator!</h1>
-  <p>Fill in the blanks below to create your own funny story:</p>
+  <p>Fill in the blanks below to create your own funny story.</p>
 
   <form id="madlib-form" method="POST" action="/ITC505/lab-7/index.html">
     <label for="noun">Noun:</label>
@@ -29,24 +29,25 @@
     <button type="submit">Create My Mad Lib!</button>
   </form>
 
-  <!-- Placeholder where result will appear -->
+  <!-- The result, addendum, and footer will appear here -->
   <div id="result-area"><!--RESULT_PLACEHOLDER--></div>
 
   <script>
-    // Front-end JS to handle same-page submission dynamically
-    const form = document.getElementById('madlib-form')
+    // Send POST request and load response into the same page
+    const form = document.getElementById('madlib-form');
     form.addEventListener('submit', async (e) => {
-      e.preventDefault()
-      const formData = new FormData(form)
+      e.preventDefault();
+      const formData = new FormData(form);
       const response = await fetch(form.action, {
         method: 'POST',
         body: formData
-      })
-      const html = await response.text()
-      document.open()
-      document.write(html)
-      document.close()
-    })
+      });
+      const html = await response.text();
+      // Replace entire document with updated HTML (same page)
+      document.open();
+      document.write(html);
+      document.close();
+    });
   </script>
 </body>
 </html>
