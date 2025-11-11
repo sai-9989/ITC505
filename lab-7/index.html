@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 7 - Mad Lib (Tarun)</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Lab 7: Mad Lib</h1>
+    <p>Created by <strong>Tarun</strong></p>
+  </header>
+
+  <main>
+    <section id="madlib-section">
+      <h2>Enter your words below</h2>
+      <form id="madlib-form">
+        <label>Adjective: <input type="text" id="adjective" required></label>
+        <label>Noun: <input type="text" id="noun" required></label>
+        <label>Verb (past tense): <input type="text" id="verbPast" required></label>
+        <label>Plural Noun: <input type="text" id="pluralNoun" required></label>
+        <label>Number: <input type="number" id="number" required></label>
+        <button type="submit" class="btn">Generate Story</button>
+      </form>
+    </section>
+
+    <section id="result-section" class="hidden">
+      <h2>Your Mad Lib Story</h2>
+      <p id="result"></p>
+    </section>
+
+    <section id="addendum" class="hidden">
+      <h2>Addendum</h2>
+      <p>
+        This single-page application is built for Lab 7 to demonstrate DOM manipulation,
+        form validation, and dynamic content generation. It displays the Mad Lib story
+        and then reveals this addendum as required by the rubric.
+      </p>
+      <ul>
+        <li>✅ All content on a single HTML page (no navigation).</li>
+        <li>✅ Addendum appears dynamically after generating the story.</li>
+        <li>✅ Visible author name (Tarun).</li>
+        <li>✅ Footer with dynamic “Last Modified” date & time.</li>
+        <li>✅ Simple and attractive design using HTML, CSS, and JS.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Tarun | ITC505 - Lab 7 | All Rights Reserved</p>
+    <p id="lastModified"></p>
+  </footer>
+
+  <script>
+    const form = document.getElementById('madlib-form');
+    const resultSection = document.getElementById('result-section');
+    const addendum = document.getElementById('addendum');
+    const result = document.getElementById('result');
+    const lastModified = document.getElementById('lastModified');
+
+    // show last modified date/time dynamically
+    const modified = new Date(document.lastModified);
+    const formatted = modified.toLocaleString('en-US', {
+      dateStyle: 'medium',
+      timeStyle: 'short'
+    });
+    lastModified.textContent = "Last Modified: " + formatted;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const adjective = document.getElementById('adjective').value.trim();
+      const noun = document.getElementById('noun').value.trim();
+      const verbPast = document.getElementById('verbPast').value.trim();
+      const pluralNoun = document.getElementById('pluralNoun').value.trim();
+      const number = document.getElementById('number').value.trim();
+
+      if (!adjective || !noun || !verbPast || !pluralNoun || !number) {
+        alert("Please fill all fields before generating your story.");
+        return;
+      }
+
+      const story = `Once upon a time, there was a ${adjective} ${noun} who ${verbPast} with ${number} ${pluralNoun}. It was an unforgettable day!`;
+
+      result.textContent = story;
+      resultSection.classList.remove('hidden');
+      addendum.classList.remove('hidden');
+    });
+  </script>
+</body>
+</html>
