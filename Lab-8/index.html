@@ -1,103 +1,366 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Lab 8 — Input Validation (Premium)</title>
+  <meta charset="UTF-8" />
+  <title>Lab 8 - Secure Registration Form</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Style included -->
   <style>
-    :root{
-      --bg:#000;
-      --card-bg: rgba(18,18,20,0.75);
-      --accent1: #00aaff;
-      --accent2: #a100ff;
-      --error: #ff4f6d;
-      --success: #2ee6a5;
+    /* Reset-ish */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    html, body { height:100%; margin:0; font-family:Arial, Helvetica, sans-serif; background:var(--bg); color:#eee; }
-    
-    /* Background blobs */
-    .bg-blob { position:fixed; width:560px; height:560px; border-radius:50%; filter:blur(120px); z-index:0; pointer-events:none; }
-    .blob-1 { background: linear-gradient(45deg, rgba(0,170,255,0.35), rgba(0,170,255,0.12)); top:-180px; left:-160px; animation: float1 8s ease-in-out infinite alternate; }
-    .blob-2 { background: linear-gradient(45deg, rgba(161,0,255,0.30), rgba(161,0,255,0.10)); right:-160px; bottom:-180px; animation: float2 7s ease-in-out infinite alternate-reverse; }
-    @keyframes float1{ from{transform:translateY(-10px) rotate(0deg)} to{transform:translateY(40px) rotate(12deg)} }
-    @keyframes float2{ from{transform:translateY(10px) rotate(0deg)} to{transform:translateY(-36px) rotate(-10deg)} }
+    html,
+    body {
+      height: 100%;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #f7f7ff;
+    }
 
-    /* Card container */
-    .wrap { position:relative; z-index:2; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px; }
-    .card { width:480px; max-width:95%; background: var(--card-bg); border-radius:18px; padding:28px; box-shadow:0 10px 40px rgba(0,0,0,0.65),0 1px 0 rgba(255,255,255,0.02) inset; backdrop-filter: blur(8px); transition: transform .18s ease, box-shadow .18s ease; }
-    .card:hover { transform: translateY(-6px) rotateX(2deg); box-shadow:0 18px 50px rgba(0,0,0,0.75); }
+    /* Background with subtle 3D gradient */
+    body {
+      background: radial-gradient(circle at top, #3b82f6 0, #020617 45%, #000 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow: hidden;
+    }
 
-    h1 { text-align:center; color:#fff; margin-bottom:8px; }
-    p.subtitle { text-align:center; color:#bfbfbf; font-size:13px; margin-bottom:20px; }
+    /* 3D floating orbits */
+    .background-orbit {
+      position: fixed;
+      width: 380px;
+      height: 380px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(59,130,246,0.45), transparent 60%);
+      filter: blur(4px);
+      top: -80px;
+      right: -60px;
+      z-index: -2;
+    }
 
-    form { display:block; gap:12px; }
-    .field { margin-top:10px; position:relative; }
-    label { display:block; font-size:12px; color:#cfcfcf; margin-bottom:6px; }
-    input[type="text"], input[type="email"], input[type="password"] { width:100%; padding:14px 44px 14px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.04); background:#111; color:#fff; font-size:14px; box-shadow:0 6px 18px rgba(0,0,0,0.6); outline:none; }
-    input:focus { transform:translateY(-2px) scale(1.02); border-color: rgba(0,170,255,0.55); box-shadow:0 0 18px rgba(0,170,255,0.7); }
+    .background-orbit.orbit-2 {
+      width: 460px;
+      height: 460px;
+      background: radial-gradient(circle, rgba(16,185,129,0.35), transparent 60%);
+      bottom: -120px;
+      left: -100px;
+    }
 
-    .toggle-btn { position:absolute; right:8px; top:50%; transform:translateY(-50%); cursor:pointer; background:transparent; border:none; color:#cfcfcf; }
-    .inline-error { color:var(--error); font-size:12px; margin-top:6px; display:block; }
-    .msg { margin-top:14px; height:auto; font-size:14px; text-align:center; }
+    /* Layout wrapper */
+    .wrapper {
+      width: 100%;
+      max-width: 520px;
+    }
 
-    .btn { width:100%; margin-top:18px; padding:12px; border-radius:12px; border:none; cursor:pointer; font-size:15px; font-weight:600; background: linear-gradient(135deg, var(--accent1), var(--accent2)); color:#fff; box-shadow:0 8px 26px rgba(0,0,0,0.6); }
-    .btn:hover { transform:translateY(-2px); box-shadow:0 18px 44px rgba(0,0,0,0.7); }
+    /* 3D glass card */
+    .card {
+      background: radial-gradient(circle at top left, rgba(255,255,255,0.15), rgba(15,23,42,0.9));
+      border-radius: 1.75rem;
+      padding: 28px 24px 26px;
+      box-shadow:
+        0 24px 60px rgba(0,0,0,0.65),
+        0 0 0 1px rgba(148,163,184,0.2),
+        inset 0 0 40px rgba(15,23,42,0.75);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(148,163,184,0.25);
+      transform: translateY(0) translateZ(0);
+      transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+    }
 
-    .field.error input { border-color: rgba(255,79,109,0.8); }
-    .field.success input { border-color: rgba(46,230,165,0.6); }
+    .card:hover {
+      transform: translateY(-4px) translateZ(12px);
+      box-shadow:
+        0 32px 80px rgba(0,0,0,0.75),
+        0 0 0 1px rgba(191,219,254,0.4),
+        inset 0 0 55px rgba(15,23,42,0.9);
+      border-color: rgba(191,219,254,0.7);
+    }
+
+    .card-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.35rem;
+    }
+
+    .card-subtitle {
+      font-size: 0.9rem;
+      color: #cbd5f5;
+      opacity: 0.85;
+      margin-bottom: 1.4rem;
+    }
+
+    /* Field groups */
+    .field-group {
+      margin-bottom: 1rem;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.28rem;
+      color: #e5e7eb;
+    }
+
+    /* 3D input shell */
+    .field-shell {
+      position: relative;
+      border-radius: 0.9rem;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(148,163,184,0.9), rgba(30,64,175,1));
+      box-shadow:
+        0 14px 32px rgba(15,23,42,0.8),
+        inset 0 0 0 1px rgba(15,23,42,0.8);
+      transform: translateZ(0);
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+    }
+
+    .field-shell:has(input:focus) {
+      transform: translateY(-1px) translateZ(6px) scale(1.01);
+      box-shadow:
+        0 18px 44px rgba(15,23,42,0.95),
+        0 0 0 1px rgba(59,130,246,0.75);
+      background: linear-gradient(145deg, #60a5fa, #4ade80);
+    }
+
+    .field-shell input {
+      width: 100%;
+      border: none;
+      background: radial-gradient(circle at top, rgba(15,23,42,0.95), rgba(15,23,42,0.99));
+      color: #e5e7eb;
+      font-size: 0.95rem;
+      padding: 0.7rem 0.8rem;
+      border-radius: 0.86rem;
+      outline: none;
+      box-shadow:
+        inset 0 4px 12px rgba(0,0,0,0.75),
+        inset 0 -2px 4px rgba(15,23,42,0.8);
+    }
+
+    .field-shell input::placeholder {
+      color: rgba(148,163,184,0.8);
+    }
+
+    /* Error messages */
+    .error-message {
+      min-height: 0.95rem;
+      font-size: 0.78rem;
+      color: #fecaca;
+      margin-top: 0.25rem;
+    }
+
+    /* Form-level message */
+    .form-message {
+      min-height: 1.2rem;
+      font-size: 0.86rem;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-message.success {
+      color: #bbf7d0;
+    }
+
+    .form-message.error {
+      color: #fecaca;
+    }
+
+    /* Button with 3D glow */
+    .btn-primary {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      padding: 0.7rem 1.4rem;
+      margin-top: 0.4rem;
+      border-radius: 999px;
+      border: none;
+      background: radial-gradient(circle at top left, #4ade80, #22c55e);
+      color: #022c22;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-size: 0.82rem;
+      cursor: pointer;
+      box-shadow:
+        0 14px 35px rgba(16,185,129,0.55),
+        0 0 0 1px rgba(34,197,94,0.8);
+      transform: translateY(0) translateZ(0);
+      transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px) translateZ(8px) scale(1.02);
+      box-shadow:
+        0 18px 40px rgba(34,197,94,0.8),
+        0 0 0 1px rgba(190,242,100,1);
+      filter: brightness(1.04);
+    }
+
+    .btn-primary:active {
+      transform: translateY(1px) translateZ(0) scale(0.99);
+      box-shadow:
+        0 8px 20px rgba(15,23,42,0.9),
+        0 0 0 1px rgba(34,197,94,0.7);
+    }
+
+    /* Button glow orb */
+    .btn-glow {
+      position: absolute;
+      inset: -40%;
+      border-radius: inherit;
+      background: radial-gradient(circle, rgba(190,242,100,0.25), transparent 60%);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 220ms ease;
+    }
+
+    .btn-primary:hover .btn-glow {
+      opacity: 1;
+    }
+
+    /* Note text */
+    .note {
+      font-size: 0.7rem;
+      margin-top: 0.6rem;
+      color: #9ca3af;
+      line-height: 1.5;
+    }
+
+    /* Error state on shell (applied from JS via .has-error) */
+    .field-shell.has-error {
+      background: linear-gradient(145deg, #f97373, #b91c1c);
+      box-shadow:
+        0 14px 32px rgba(127,29,29,0.9),
+        0 0 0 1px rgba(248,113,113,0.9);
+    }
   </style>
+
+  <script defer src="script.js"></script>
 </head>
 <body>
+  <div class="background-orbit"></div>
+  <div class="background-orbit orbit-2"></div>
 
-  <div class="bg-blob blob-1"></div>
-  <div class="bg-blob blob-2"></div>
+  <main class="wrapper">
+    <section class="card">
+      <h1 class="card-title">Secure Registration</h1>
+      <p class="card-subtitle">
+        Lab 8 – Input Validation, XSS Protection &amp; Secure UI
+      </p>
 
-  <div class="wrap">
-    <div class="card">
-      <h1>Secure Registration</h1>
-      <p class="subtitle">Client-side validation • XSS-mitigations</p>
-
-      <form id="registrationForm" novalidate autocomplete="off">
-        <div class="field" id="field-fname">
-          <label for="fname">First Name</label>
-          <input id="fname" type="text" placeholder="John" />
-          <span class="inline-error" id="err-fname"></span>
+      <form id="registrationForm" novalidate>
+        <!-- First Name -->
+        <div class="field-group">
+          <label for="firstName" class="field-label">First Name</label>
+          <div class="field-shell">
+            <input
+              type="text"
+              id="firstName"
+              name="firstName"
+              autocomplete="given-name"
+              maxlength="50"
+              placeholder="Enter your first name"
+              pattern="^[^<>]*$"
+            />
+          </div>
+          <p class="error-message" id="firstNameError"></p>
         </div>
 
-        <div class="field" id="field-lname">
-          <label for="lname">Last Name</label>
-          <input id="lname" type="text" placeholder="Doe" />
-          <span class="inline-error" id="err-lname"></span>
+        <!-- Last Name -->
+        <div class="field-group">
+          <label for="lastName" class="field-label">Last Name</label>
+          <div class="field-shell">
+            <input
+              type="text"
+              id="lastName"
+              name="lastName"
+              autocomplete="family-name"
+              maxlength="50"
+              placeholder="Enter your last name"
+              pattern="^[^<>]*$"
+            />
+          </div>
+          <p class="error-message" id="lastNameError"></p>
         </div>
 
-        <div class="field" id="field-email">
-          <label for="email">Email</label>
-          <input id="email" type="email" placeholder="you@example.com" />
-          <span class="inline-error" id="err-email"></span>
+        <!-- Email -->
+        <div class="field-group">
+          <label for="email" class="field-label">Email</label>
+          <div class="field-shell">
+            <input
+              type="email"
+              id="email"
+              name="email"
+              autocomplete="email"
+              maxlength="80"
+              placeholder="you@example.com"
+              pattern="^[^<>]*$"
+            />
+          </div>
+          <p class="error-message" id="emailError"></p>
         </div>
 
-        <div class="field" id="field-password">
-          <label for="password">Password</label>
-          <input id="password" type="password" placeholder="At least 8 characters" />
-          <button type="button" class="toggle-btn" id="togglePassword">Show</button>
-          <span class="inline-error" id="err-password"></span>
+        <!-- Password -->
+        <div class="field-group">
+          <label for="password" class="field-label">Password</label>
+          <div class="field-shell">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              minlength="8"
+              maxlength="64"
+              placeholder="Minimum 8 characters"
+              pattern="^[^<>]*$"
+            />
+          </div>
+          <p class="error-message" id="passwordError"></p>
         </div>
 
-        <div class="field" id="field-confirm">
-          <label for="confirm">Confirm Password</label>
-          <input id="confirm" type="password" placeholder="Re-enter password" />
-          <span class="inline-error" id="err-confirm"></span>
+        <!-- Confirm Password -->
+        <div class="field-group">
+          <label for="confirmPassword" class="field-label">Confirm Password</label>
+          <div class="field-shell">
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              minlength="8"
+              maxlength="64"
+              placeholder="Retype your password"
+              pattern="^[^<>]*$"
+            />
+          </div>
+          <p class="error-message" id="confirmPasswordError"></p>
         </div>
 
-        <div class="msg" id="globalMsg"></div>
-        <button type="submit" class="btn">Register</button>
+        <!-- Form-level message -->
+        <div id="formMessage" class="form-message" aria-live="polite"></div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn-primary">
+          Submit Securely
+          <span class="btn-glow"></span>
+        </button>
+
+        <p class="note">
+          * Client-side validation &amp; basic XSS filtering shown here.  
+          Server-side validation and SQLi protection are still required.
+        </p>
       </form>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+    </section>
+  </main>
 </body>
 </html>
