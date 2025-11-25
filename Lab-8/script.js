@@ -1,36 +1,160 @@
-function sanitize(str=''){ return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+// --- Basic XSS sanitization helper ---
+function sanitizeInput(str) {
+  if (typeof str !== "string") return "";
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;");
+}
 
-const form=document.getElementById('registrationForm');
-const fname=document.getElementById('fname');
-const lname=document.getElementById('lname');
-const email=document.getElementById('email');
-const password=document.getElementById('password');
-const confirm=document.getElementById('confirm');
+// Simple email regex for client-side validation
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const errFname=document.getElementById('err-fname');
-const errLname=document.getElementById('err-lname');
-const errEmail=document.getElementById('err-email');
-const errPassword=document.getElementById('err-password');
-const errConfirm=document.getElementById('err-confirm');
-const globalMsg=document.getElementById('globalMsg');
-const togglePassword=document.getElementById('togglePassword');
+// Disallow obvious XSS characters/patterns
+function containsXSSChars(str) {
+  if (!str) return false;
+  const lowered = str.toLowerCase();
+  return (
+    lowered.includes("<") ||
+    lowered.includes(">") ||
+    lowered.includes("script") ||
+    lowered.includes("onerror=") ||
+    lowered.includes("onload=")
+  );
+}
 
-function isEmpty(v){ return !v||v.trim()===''; }
-function validEmail(v){ return /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(v); }
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("registrationForm");
+  const formMessage = document.getElementById("formMessage");
 
-function markFieldOK(f,err){ f.classList.remove('error'); f.classList.add('success'); if(err) err.textContent=''; }
-function markFieldError(f,err,msg){ f.classList.add('error'); f.classList.remove('success'); err.textContent=msg; }
-function clearFieldMarks(){ [fname,lname,email,password,confirm].forEach(i=>i.parentNode.classList.remove('error','success')); [errFname,errLname,errEmail,errPassword,errConfirm].forEach(e=>e.textContent=''); globalMsg.textContent=''; }
+  const fields = {
+    firstName: document.getElementById("firstName"),
+    lastName: document.getElementById("lastName"),
+    email: document.getElementById("email"),
+    password: document.getElementById("password"),
+    confirmPassword: document.getElementById("confirmPassword")
+  };
 
-togglePassword.addEventListener('click',()=>{ const type=password.type==='password'?'text':'password'; password.type=confirm.type=type; togglePassword.textContent=type==='text'?'Hide':'Show'; });
+  const errors = {
+    firstName: document.getElementById("firstNameError"),
+    lastName: document.getElementById("lastNameError"),
+    email: document.getElementById("emailError"),
+    password: document.getElementById("passwordError"),
+    confirmPassword: document.getElementById("confirmPasswordError")
+  };
 
-form.addEventListener('submit',e=>{
-  e.preventDefault(); clearFieldMarks(); let ok=true;
-  const f=sanitize(fname.value.trim()), l=sanitize(lname.value.trim()), em=sanitize(email.value.trim()), p=password.value, c=confirm.value;
-  if(isEmpty(f)){ markFieldError(fname,errFname,'First name required'); ok=false;} else markFieldOK(fname,errFname);
-  if(isEmpty(l)){ markFieldError(lname,errLname,'Last name required'); ok=false;} else markFieldOK(lname,errLname);
-  if(isEmpty(em)){ markFieldError(email,errEmail,'Email required'); ok=false;} else if(!validEmail(em)){ markFieldError(email,errEmail,'Invalid email'); ok=false;} else markFieldOK(email,errEmail);
-  if(isEmpty(p)){ markFieldError(password,errPassword,'Password required'); ok=false;} else if(p.length<8){ markFieldError(password,errPassword,'At least 8 chars'); ok=false;} else markFieldOK(password,errPassword);
-  if(isEmpty(c)){ markFieldError(confirm,errConfirm,'Confirm password'); ok=false;} else if(c!==p){ markFieldError(confirm,errConfirm,'Passwords do not match'); ok=false;} else markFieldOK(confirm,errConfirm);
-  if(ok){ globalMsg.style.color='#2ee6a5'; globalMsg.textContent='Form validated successfully!'; form.reset(); }
+  // Utility to show error on a single field
+  function showError(fieldKey, message) {
+    const field = fields[fieldKey];
+    const errorElement = errors[fieldKey];
+
+    if (!field || !errorElement) return;
+
+    errorElement.textContent = message || "";
+    const shell = field.closest(".field-shell");
+
+    if (shell) {
+      if (message) {
+        shell.classList.add("has-error");
+      } else {
+        shell.classList.remove("has-error");
+      }
+    }
+  }
+
+  // Validate a single field
+  function validateField(fieldKey) {
+    const value = fields[fieldKey].value.trim();
+
+    // Check for empty fields
+    if (!value) {
+      showError(fieldKey, "This field is required.");
+      return false;
+    }
+
+    // Basic XSS block
+    if (containsXSSChars(value)) {
+      showError(fieldKey, "Input contains forbidden characters.");
+      return false;
+    }
+
+    if (fieldKey === "email") {
+      if (!emailRegex.test(value)) {
+        showError(fieldKey, "Please enter a valid email address.");
+        return false;
+      }
+    }
+
+    if (fieldKey === "password") {
+      if (value.length < 8) {
+        showError(fieldKey, "Password must be at least 8 characters.");
+        return false;
+      }
+    }
+
+    if (fieldKey === "confirmPassword") {
+      const passwordValue = fields.password.value.trim();
+      if (value !== passwordValue) {
+        showError(fieldKey, "Passwords do not match.");
+        return false;
+      }
+    }
+
+    // Clear error
+    showError(fieldKey, "");
+    return true;
+  }
+
+  // Real-time validation while typing
+  Object.keys(fields).forEach((key) => {
+    fields[key].addEventListener("input", () => {
+      validateField(key);
+
+      // If password changes, re-check confirmPassword
+      if (key === "password" && fields.confirmPassword.value.trim()) {
+        validateField("confirmPassword");
+      }
+    });
+  });
+
+  // Handle submit
+  form.addEventListener("submit", (e) => {
+    e.preventDefault(); // prevent actual submit (no backend in lab)
+
+    formMessage.textContent = "";
+    formMessage.classList.remove("success", "error");
+
+    let allValid = true;
+
+    // Validate each field
+    Object.keys(fields).forEach((key) => {
+      const valid = validateField(key);
+      if (!valid) {
+        allValid = false;
+      }
+    });
+
+    if (!allValid) {
+      formMessage.textContent =
+        "Please fix the highlighted fields and try again.";
+      formMessage.classList.add("error");
+      return;
+    }
+
+    // At this point inputs are checked and sanitized before any display
+    const safeFirstName = sanitizeInput(fields.firstName.value.trim());
+    const safeLastName = sanitizeInput(fields.lastName.value.trim());
+    const safeEmail = sanitizeInput(fields.email.value.trim());
+
+    formMessage.innerHTML =
+      `✅ Form submitted successfully (client-side).<br>` +
+      `Welcome, <strong>${safeFirstName} ${safeLastName}</strong> &mdash; ` +
+      `we will contact you at <strong>${safeEmail}</strong>.`;
+    formMessage.classList.add("success");
+
+    // Optionally clear the form (for demo)
+    // form.reset();
+  });
 });
