@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Revenge of Lights Out – Final Project</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Revenge of Lights Out</h1>
+        <p>
+            Click a square to toggle it <strong>and</strong> its immediate neighbors.
+            Your goal is to clear all the dark squares. The starting board is randomly
+            generated but always solvable.
+        </p>
+    </header>
+
+    <main>
+        <section class="game-panel">
+            <h2>Game Board</h2>
+
+            <div class="status-bar">
+                <div class="status-pill">
+                    Moves: <span id="moveCount">0</span>
+                </div>
+                <div class="button-row">
+                    <button id="newGameBtn" class="btn-primary">New Random Game</button>
+                    <button id="resetBtn" class="btn-secondary">Reset to Start</button>
+                </div>
+            </div>
+
+            <div class="board-wrapper">
+                <div id="board" aria-label="Lights Out board"></div>
+            </div>
+        </section>
+
+        <section class="info-panel">
+            <h2>How to Play</h2>
+            <p>
+                <strong>Objective:</strong> Turn <em>all</em> the lights off. A light is
+                considered "off" when the square is completely dark.
+            </p>
+            <ul>
+                <li>Clicking a cell toggles that square and its up/down/left/right neighbors.</li>
+                <li>Each page refresh (or <em>New Random Game</em>) builds a new solvable puzzle.</li>
+                <li>When all lights are off, a pop-up will announce your victory.</li>
+            </ul>
+
+            <p class="hint">
+                Hint: The puzzle you see is generated from a solved board by applying
+                random valid moves. That guarantees the configuration you play is always solvable.
+            </p>
+
+            <div class="font-notes">
+                <strong>Font notes:</strong><br>
+                The page uses the retro arcade font
+                <span style="font-family: 'Press Start 2P', system-ui, sans-serif;">Press Start 2P</span>
+                for headings and the monospaced
+                <span style="font-family: 'Roboto Mono', monospace;">Roboto Mono</span>
+                for body text. Both are served from Google Fonts using a CSS
+                <code>@import</code> rule, which creates the “font craziness” requested in the assignment.
+            </div>
+
+            <!-- SHORT ADDENDUM SHOWN ON THE WEBSITE -->
+            <section class="addendum-block">
+                <h2>Developer Addendum</h2>
+                <p>
+                    For this project I treated the game board as a 5×5 array of booleans,
+                    where each value tracks whether a tile is dark (<code>true</code>) or lit
+                    (<code>false</code>). Every time the player clicks a tile, a single
+                    <code>applyMove()</code> function toggles that tile plus its four neighbors,
+                    and then the script checks whether any dark tiles remain. If all tiles are
+                    lit, a JavaScript <code>window.alert("You win!")</code> announces success.
+                </p>
+                <p>
+                    To guarantee a random but solvable starting position, I began from a solved
+                    board with all lights on and applied a series of random moves in JavaScript.
+                    Because these moves use the same logic as a real click, the final pattern is
+                    always reachable by some sequence of valid moves. I also store a copy of this
+                    initial state so the “Reset to Start” button can restore the original puzzle.
+                </p>
+                <p>
+                    The main challenge was keeping the visual board in sync with the internal
+                    state. I solved this by using the array as the single source of truth and
+                    updating the DOM cell classes (especially the <code>is-off</code> class)
+                    after every move. This project helped me practice DOM manipulation, event
+                    handling, and thinking about puzzle generation in terms of reversible moves.
+                </p>
+            </section>
+        </section>
+    </main>
+
+    <footer>
+        <p>Last updated:
+            <span id="lastModified"></span>
+        </p>
+    </footer>
+
+    <script src="script.js"></script>
+
+    <!-- Required "Last updated" footer script from assignment -->
+    <script type="text/javascript">
+        var x = document.lastModified;
+        document.getElementById('lastModified').textContent = x;
+    </script>
+</body>
+</html>
